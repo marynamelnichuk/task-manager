@@ -1,6 +1,5 @@
 package task.controller;
 
-import com.mongodb.DBPortPool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,6 @@ import task.dto.TaskDTO;
 import task.dto.request.TaskCreateRequest;
 import task.dto.request.TaskUpdateRequest;
 import task.dto.response.TaskCreateResponse;
-import task.model.Task;
 import task.service.TaskService;
 
 import javax.validation.Valid;

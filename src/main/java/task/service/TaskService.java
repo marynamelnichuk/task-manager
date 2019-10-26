@@ -1,9 +1,9 @@
 package task.service;
 
 
+
 import task.dto.TaskDTO;
 import task.dto.request.TaskCreateRequest;
-import task.dto.request.TaskShareRequest;
 import task.dto.request.TaskUpdateRequest;
 import task.dto.response.TaskCreateResponse;
 import task.model.Task;
@@ -20,7 +20,6 @@ public interface TaskService {
 
     TaskDTO updateTask(TaskUpdateRequest task);
 
-    Task shareTask(TaskShareRequest task);
-
+    Task findTaskById(Long id);
 
 }

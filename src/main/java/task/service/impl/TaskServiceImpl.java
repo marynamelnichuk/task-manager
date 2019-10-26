@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import task.dto.TaskDTO;
 import task.dto.request.TaskCreateRequest;
-import task.dto.request.TaskShareRequest;
 import task.dto.request.TaskUpdateRequest;
 import task.dto.response.TaskCreateResponse;
 import task.exception.EntityNotFoundException;
@@ -13,8 +12,8 @@ import task.model.Task;
 import task.repository.TaskRepository;
 import task.service.TaskService;
 import task.service.UserService;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -30,10 +29,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskDTO> findAllTasksByUserId(Integer userId) {
-        throw new UnsupportedOperationException();
+        return taskRepository.findByUserId(userId).stream()
+                .map(this::mapToTaskDTO)
+                .collect(Collectors.toList());
     }
 
-    private Task mapToTaskFromTaskCreateRequest(TaskCreateRequest taskCreateRequest) {
+    public Task mapToTaskFromTaskCreateRequest(TaskCreateRequest taskCreateRequest) {
         Task task = new Task();
         task.setStatus(Status.ACTIVE);
         task.setDescription(taskCreateRequest.getDescription());
@@ -41,18 +42,18 @@ public class TaskServiceImpl implements TaskService {
         return  task;
     }
 
-    private TaskCreateResponse mapToTaskCreateResponse(Task task) {
+    public TaskCreateResponse mapToTaskCreateResponse(Task task) {
         TaskCreateResponse taskCreateResponse = new TaskCreateResponse();
-        taskCreateResponse.setTaskId(task.getId());
         taskCreateResponse.setDescription(task.getDescription());
         taskCreateResponse.setStatus(task.getStatus());
+        taskCreateResponse.setTaskId(task.getId());
         return taskCreateResponse;
     }
 
     @Override
     public TaskCreateResponse createTask(TaskCreateRequest taskCreateRequest) throws EntityNotFoundException {
-        Task savedTask = taskRepository.save(mapToTaskFromTaskCreateRequest(taskCreateRequest));
-        return mapToTaskCreateResponse(savedTask);
+        Task task = taskRepository.save(mapToTaskFromTaskCreateRequest(taskCreateRequest));
+        return mapToTaskCreateResponse(task);
     }
 
     @Override
@@ -60,24 +61,18 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    private Task findById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("Task with id:{0} not found", id));
-    }
-
-    private TaskDTO mapToTaskDTO(Task task) {
+    public TaskDTO mapToTaskDTO(Task task) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setTaskId(task.getId());
         taskDTO.setDescription(task.getDescription());
         taskDTO.setStatus(task.getStatus());
-        taskDTO.setRecipientId(1);
         return taskDTO;
     }
 
 
     @Override
     public TaskDTO updateTask(TaskUpdateRequest taskUpdateRequest) {
-        Task task  = findById(taskUpdateRequest.getTaskId());
+        Task task  = findTaskById(taskUpdateRequest.getTaskId());
         task.setDescription(taskUpdateRequest.getDescription());
         task.setStatus(taskUpdateRequest.getStatus());
         Task savedTask = taskRepository.save(task);
@@ -85,8 +80,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task shareTask(TaskShareRequest task) {
-        throw  new UnsupportedOperationException();
+    public Task findTaskById(Long id) {
+        return taskRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Task with id:{0} not found", id));
     }
+
 
 }

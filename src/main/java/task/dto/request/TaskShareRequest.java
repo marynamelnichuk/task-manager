@@ -2,19 +2,30 @@ package task.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TaskShareRequest {
+import javax.validation.constraints.Email;
 
-    @JsonProperty("user_id")
-    private Integer idUser;
+public class TaskShareRequest {
 
     @JsonProperty("id_task")
     private Long idTask;
 
-    public Integer getIdUser() {
-        return idUser;
-    }
+    @Email
+    private String email;
+
 
     public Long getIdTask() {
         return idTask;
+    }
+
+    public void setIdTask(Long idTask) {
+        this.idTask = idTask;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

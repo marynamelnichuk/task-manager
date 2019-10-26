@@ -35,4 +35,13 @@ public class TaskCreateResponse {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "TaskCreateResponse{" +
+                "taskId=" + taskId +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

@@ -1,10 +1,12 @@
 package task.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,8 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
+    /*@OneToMany(mappedBy = "task")
+    private List<SharedTask> sharedTasks;*/
 
     public Long getId() {
         return id;
@@ -52,5 +56,14 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

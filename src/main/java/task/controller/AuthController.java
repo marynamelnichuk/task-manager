@@ -1,14 +1,11 @@
 package task.controller;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import task.dto.UserDTO;
 import task.dto.request.UserLoginRequest;
 import task.dto.request.UserRegisterRequest;
 import task.dto.response.UserRegisterResponse;

@@ -35,4 +35,13 @@ public class TaskUpdateRequest {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "TaskUpdateRequest{" +
+                "taskId=" + taskId +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

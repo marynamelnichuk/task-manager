@@ -12,6 +12,8 @@ public class TaskDTO {
 
     private Status status;
 
+    private Integer creator;
+
     public Long getTaskId() {
         return taskId;
     }
@@ -36,12 +38,11 @@ public class TaskDTO {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "TaskDTO{" +
-                "taskId=" + taskId +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
+    public Integer getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Integer creator) {
+        this.creator = creator;
     }
 }

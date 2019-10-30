@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Email;
 
-public class TaskShareRequest {
+public class ShareTaskRequest {
 
     @JsonProperty("id_task")
     private Long idTask;

@@ -23,9 +23,6 @@ public class Task implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    /*@OneToMany(mappedBy = "task")
-    private List<SharedTask> sharedTasks;*/
-
     public Long getId() {
         return id;
     }
@@ -58,12 +55,6 @@ public class Task implements Serializable {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
-    }
+
+
 }

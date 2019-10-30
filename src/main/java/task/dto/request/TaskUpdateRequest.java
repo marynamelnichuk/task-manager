@@ -36,12 +36,4 @@ public class TaskUpdateRequest {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "TaskUpdateRequest{" +
-                "taskId=" + taskId +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
-    }
 }

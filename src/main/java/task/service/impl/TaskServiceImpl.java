@@ -7,8 +7,9 @@ import task.dto.request.TaskCreateRequest;
 import task.dto.request.TaskUpdateRequest;
 import task.dto.response.TaskCreateResponse;
 import task.exception.EntityNotFoundException;
-import task.model.Status;
+import task.mapper.TaskMapper;
 import task.model.Task;
+import task.model.User;
 import task.repository.TaskRepository;
 import task.service.TaskService;
 import task.service.UserService;
@@ -20,53 +21,33 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserService userService;
+    private final TaskMapper taskMapper;
 
     @Autowired
-    TaskServiceImpl(TaskRepository taskRepository, UserService userService) {
+    TaskServiceImpl(TaskRepository taskRepository, UserService userService,
+                    TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
         this.userService = userService;
+        this.taskMapper = taskMapper;
     }
 
     @Override
     public List<TaskDTO> findAllTasksByUserId(Integer userId) {
         return taskRepository.findByUserId(userId).stream()
-                .map(this::mapToTaskDTO)
+                .map(taskMapper::mapToTaskDTO)
                 .collect(Collectors.toList());
-    }
-
-    public Task mapToTaskFromTaskCreateRequest(TaskCreateRequest taskCreateRequest) {
-        Task task = new Task();
-        task.setStatus(Status.ACTIVE);
-        task.setDescription(taskCreateRequest.getDescription());
-        task.setUser(userService.findUserById(taskCreateRequest.getUserId()));
-        return  task;
-    }
-
-    public TaskCreateResponse mapToTaskCreateResponse(Task task) {
-        TaskCreateResponse taskCreateResponse = new TaskCreateResponse();
-        taskCreateResponse.setDescription(task.getDescription());
-        taskCreateResponse.setStatus(task.getStatus());
-        taskCreateResponse.setTaskId(task.getId());
-        return taskCreateResponse;
     }
 
     @Override
     public TaskCreateResponse createTask(TaskCreateRequest taskCreateRequest) throws EntityNotFoundException {
-        Task task = taskRepository.save(mapToTaskFromTaskCreateRequest(taskCreateRequest));
-        return mapToTaskCreateResponse(task);
+        User user = userService.findUserById(taskCreateRequest.getUserId());
+        Task task = taskRepository.save(taskMapper.mapToTaskFromTaskCreateRequest(taskCreateRequest, user));
+        return taskMapper.mapToTaskCreateResponse(task);
     }
 
     @Override
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
-    }
-
-    public TaskDTO mapToTaskDTO(Task task) {
-        TaskDTO taskDTO = new TaskDTO();
-        taskDTO.setTaskId(task.getId());
-        taskDTO.setDescription(task.getDescription());
-        taskDTO.setStatus(task.getStatus());
-        return taskDTO;
     }
 
 
@@ -76,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskUpdateRequest.getDescription());
         task.setStatus(taskUpdateRequest.getStatus());
         Task savedTask = taskRepository.save(task);
-        return mapToTaskDTO(savedTask);
+        return taskMapper.mapToTaskDTO(savedTask);
     }
 
     @Override

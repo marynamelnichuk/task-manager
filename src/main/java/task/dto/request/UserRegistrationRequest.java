@@ -2,9 +2,8 @@ package task.dto.request;
 
 import javax.validation.constraints.Email;
 
-public class UserRegisterRequest {
+public class UserRegistrationRequest {
 
-    @Email
     private String email;
 
     private String password;
@@ -36,12 +35,4 @@ public class UserRegisterRequest {
         this.nickname = nickname;
     }
 
-    @Override
-    public String toString() {
-        return "UserRegisterRequest{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", nickname='" + nickname + '\'' +
-                '}';
-    }
 }

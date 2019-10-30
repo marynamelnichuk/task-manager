@@ -1,10 +1,9 @@
 package task.dto.response;
 
-public class UserRegisterResponse {
+public class UserRegistrationResponse {
 
     private Integer id;
     private String email;
-    private String password;
     private String nickname;
 
     public void setId(Integer id) {
@@ -13,10 +12,6 @@ public class UserRegisterResponse {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setNickname(String nickname) {
@@ -29,10 +24,6 @@ public class UserRegisterResponse {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getNickname() {

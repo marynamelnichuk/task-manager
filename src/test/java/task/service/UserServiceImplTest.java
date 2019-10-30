@@ -1,54 +1,94 @@
 package task.service;
 
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import task.dto.request.UserRegisterRequest;
-import task.dto.response.UserRegisterResponse;
+import task.dto.request.UserRegistrationRequest;
+import task.dto.response.UserRegistrationResponse;
+import task.mapper.UserMapper;
 import task.model.User;
 import task.repository.UserRepository;
 import task.service.impl.UserServiceImpl;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
 
     @Mock
-    private UserServiceImpl userService;
+    private UserRepository userRepository;
 
     @Mock
-    UserRepository userRepository;
+    private UserMapper userMapper;
 
     @InjectMocks
-    UserServiceImpl userService2;
+    private UserServiceImpl userService;
 
     @Test
-    public void register() {
-        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
-        userRegisterRequest.setEmail("test@gmail.com");
-        userRegisterRequest.setNickname("test_nickname");
-        userRegisterRequest.setPassword("testPassword");
+    public void registerUserShouldReturnCreatedUser() {
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setEmail("test121@gmail.com");
+        userRegistrationRequest.setNickname("test_nickname112");
+        userRegistrationRequest.setPassword("testPassword");
 
         User user = new User();
-        user.setEmail(userRegisterRequest.getEmail());
-        user.setNickname(userRegisterRequest.getNickname());
-        user.setPassword(userRegisterRequest.getPassword());
+        user.setEmail(userRegistrationRequest.getEmail());
+        user.setNickname(userRegistrationRequest.getNickname());
+        user.setPassword(userRegistrationRequest.getPassword());
 
-        when(userRepository.save(user)).thenReturn(user);
-        UserRegisterResponse savedUser = userService.register(userRegisterRequest);
-        assertThat(userRegisterRequest.getEmail()).isSameAs(savedUser);
+        UserRegistrationResponse userResponse = new UserRegistrationResponse();
+        userResponse.setNickname(user.getNickname());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setId(user.getId());
+
+        when(userMapper.mapToUserFromUserRequest(any(UserRegistrationRequest.class))).thenReturn(user);
+        when(userRepository.existsByEmail(any(String.class))).thenReturn(false);
+        when(userRepository.existsByNickname(any(String.class))).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenReturn((user));
+        when(userMapper.mapToRegisterResponse(any(User.class))).thenReturn(userResponse);
+
+        UserRegistrationResponse savedUser = userService.register(userRegistrationRequest);
+        Assert.assertEquals(userRegistrationRequest.getEmail(), savedUser.getEmail());
+        Assert.assertEquals(userRegistrationRequest.getNickname(), savedUser.getNickname());
+
     }
 
     @Test
-    public void findUserById() {
-
+    public void findUserByIdShouldReturnUserWithSameId() {
+        final int USER_ID =  1;
+        User user = new User();
+        user.setEmail("test@gmail.com");
+        user.setPassword("password");
+        user.setNickname("nickname");
+        user.setId(USER_ID);
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(user));
+        User foundUser = userService.findUserById(USER_ID);
+        Assert.assertEquals(user.getId(), foundUser.getId());
+        Assert.assertEquals(user.getEmail(), foundUser.getEmail());
+        Assert.assertEquals(user.getNickname(), foundUser.getNickname());
+        Assert.assertEquals(user.getPassword(), foundUser.getPassword());
     }
 
     @Test
-    public void findUserByEmail() {
+    public void findUserByEmailShouldReturnUserWithSameEmail() {
+        final String USER_EMAIL =  "test@gmail.com";
+        User user = new User();
+        user.setEmail(USER_EMAIL);
+        user.setPassword("password");
+        user.setNickname("nickname");
+        user.setId(1);
+        when(userRepository.findByEmail(USER_EMAIL)).thenReturn(Optional.of(user));
+        User foundUser = userService.findUserByEmail(USER_EMAIL);
+        Assert.assertEquals(user.getId(), foundUser.getId());
+        Assert.assertEquals(user.getEmail(), foundUser.getEmail());
+        Assert.assertEquals(user.getNickname(), foundUser.getNickname());
+        Assert.assertEquals(user.getPassword(), foundUser.getPassword());
     }
 }

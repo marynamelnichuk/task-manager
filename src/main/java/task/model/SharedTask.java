@@ -16,34 +16,6 @@ public class SharedTask implements Serializable {
     @Column(name = "task_id", insertable=false, updatable=false)
     private Long taskId;
 
-
-    /*@ManyToOne
-    @JoinColumn(name = "recipient_id")
-    private User recipient;
-
-
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-    private Task task;
-*/
-
-
-   /* public User getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(User recipient) {
-        this.recipient = recipient;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-*/
     public Integer getRecipientId() {
         return recipientId;
     }

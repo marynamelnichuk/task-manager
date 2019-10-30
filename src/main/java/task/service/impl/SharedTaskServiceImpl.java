@@ -4,8 +4,9 @@ package task.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import task.dto.SharedTaskDTO;
-import task.dto.request.TaskShareRequest;
+import task.dto.request.ShareTaskRequest;
 import task.exception.EntityNotFoundException;
+import task.mapper.SharedTaskMapper;
 import task.model.SharedTask;
 import task.model.Task;
 import task.model.User;
@@ -23,39 +24,36 @@ public class SharedTaskServiceImpl implements SharedTaskService {
     private final SharedTaskRepository sharedTaskRepository;
     private final UserService userService;
     private final TaskService taskService;
+    private final SharedTaskMapper sharedTaskMapper;
 
     @Autowired
-    SharedTaskServiceImpl(SharedTaskRepository sharedTaskRepository, UserService userService, TaskService taskService) {
+    SharedTaskServiceImpl(SharedTaskRepository sharedTaskRepository, UserService userService, TaskService taskService,
+                          SharedTaskMapper sharedTaskMapper) {
         this.sharedTaskRepository = sharedTaskRepository;
         this.userService = userService;
         this.taskService = taskService;
+        this.sharedTaskMapper = sharedTaskMapper;
     }
 
     @Override
-    public SharedTaskDTO shareTask(TaskShareRequest taskShareRequest) throws EntityNotFoundException {
-        User user  = userService.findUserByEmail(taskShareRequest.getEmail());
-        Task task = taskService.findTaskById(taskShareRequest.getIdTask());
+    public SharedTaskDTO shareTask(ShareTaskRequest shareTaskRequest) throws EntityNotFoundException {
+        User user  = userService.findUserByEmail(shareTaskRequest.getEmail());
+        Task task = taskService.findTaskById(shareTaskRequest.getIdTask());
         SharedTask sharedTask = new SharedTask();
         sharedTask.setRecipientId(user.getId());
         sharedTask.setTaskId(task.getId());
         sharedTaskRepository.save(sharedTask);
-        return mapToTaskDTO(sharedTaskRepository.save(sharedTask));
+        //Task task2 = taskService.findTaskById(savedTask.getTaskId());
+        return sharedTaskMapper.mapToShareTaskDTO(task);
     }
 
-    private SharedTaskDTO mapToTaskDTO(SharedTask sharedTask) {
-        SharedTaskDTO taskDTO = new SharedTaskDTO();
-        Task task = taskService.findTaskById(sharedTask.getTaskId());
-        taskDTO.setRecipient(task.getUser().getNickname());
-        taskDTO.setDescription(task.getDescription());
-        taskDTO.setStatus(task.getStatus());
-        taskDTO.setTaskId(task.getId());
-        return taskDTO;
-    }
 
     @Override
     public List<SharedTaskDTO> findAllSharedTaskByUserId(Integer userId) {
         return sharedTaskRepository.findAllByRecipientId(userId).stream()
-                .map(this::mapToTaskDTO).collect(Collectors.toList());
+                .map(elem ->
+                    sharedTaskMapper.mapToShareTaskDTO(taskService.findTaskById(sharedTaskRepository.save(elem).getTaskId())
+                    )).collect(Collectors.toList());
     }
 
 }

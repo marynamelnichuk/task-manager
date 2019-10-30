@@ -1,16 +1,13 @@
 package task.dto.request;
 
-import javax.validation.constraints.Email;
-
 public class UserLoginRequest {
 
-    @Email
-    private String email;
+    private String nickname;
 
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getNickname() {
+        return nickname;
     }
 
     public String getPassword() {

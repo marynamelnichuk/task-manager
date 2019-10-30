@@ -29,11 +29,4 @@ public class TaskCreateRequest {
     }
 
 
-    @Override
-    public String toString() {
-        return "TaskCreateRequest{" +
-                "userId=" + userId +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

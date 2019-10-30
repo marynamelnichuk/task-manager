@@ -2,19 +2,21 @@ package task.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import task.dto.UserDTO;
 import task.dto.request.UserLoginRequest;
-import task.dto.request.UserRegisterRequest;
-import task.dto.response.UserRegisterResponse;
+import task.dto.request.UserRegistrationRequest;
+import task.dto.response.UserRegistrationResponse;
+import task.exception.AuthenticationException;
+import task.exception.EmailAlreadyExistException;
+import task.exception.NicknameAlreadyExistException;
 import task.service.UserService;
 
 import javax.validation.Valid;
 
+
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -25,15 +27,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
-        throw new UnsupportedOperationException();
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody UserLoginRequest userLoginRequest) throws AuthenticationException {
+        return ResponseEntity.ok(userService.findByNicknameAndPassword(userLoginRequest));
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserRegisterResponse> registration(@Valid @RequestBody UserRegisterRequest userRegisterRequest) {
-        System.out.println(userRegisterRequest);
-        return ResponseEntity.ok(userService.register(userRegisterRequest));
+    public ResponseEntity<UserRegistrationResponse> registration(@Valid @RequestBody UserRegistrationRequest userRegistrationRequest)
+            throws EmailAlreadyExistException, NicknameAlreadyExistException {
+        return ResponseEntity.ok(userService.register(userRegistrationRequest));
     }
+
 
 
 }

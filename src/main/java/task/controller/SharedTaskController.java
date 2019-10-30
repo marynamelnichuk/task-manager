@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import task.dto.SharedTaskDTO;
-import task.dto.request.TaskShareRequest;
+import task.dto.request.ShareTaskRequest;
 import task.service.SharedTaskService;
 
 import javax.validation.Valid;
@@ -23,11 +23,11 @@ public class SharedTaskController {
     }
 
     @PostMapping
-    public ResponseEntity<SharedTaskDTO> shareTask(@Valid  @RequestBody  TaskShareRequest taskShareRequest) {
-        return ResponseEntity.ok(sharedTaskService.shareTask(taskShareRequest));
+    public ResponseEntity<SharedTaskDTO> shareTask(@Valid  @RequestBody ShareTaskRequest shareTaskRequest) {
+        return ResponseEntity.ok(sharedTaskService.shareTask(shareTaskRequest));
 }
 
-    @GetMapping
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<SharedTaskDTO>> findSharedTaskByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(sharedTaskService.findAllSharedTaskByUserId(userId));
     }

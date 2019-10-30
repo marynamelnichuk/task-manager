@@ -1,0 +1,93 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1.0.1
+      author: marynaMelnychuk
+      changes:
+        - createTable:
+            tableName: users
+            catalogName: db_task_manager
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nickname
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+  - changeSet:
+      id: 1.0.2
+      author: marynaMelnychuk
+      changes:
+        - createTable:
+            tableName: tasks
+            catalogName: db_task_manager
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: varchar(250)
+                  defaultValue: ACTIVE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(25)
+                  defaultValue: ''
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_task_user
+                    references: users(id)
+  - changeSet:
+      id: 1.0.3
+      author: marynaMelnychuk
+      changes:
+        - createTable:
+            tableName: shared_tasks
+            catalogName: db_task_manager
+            columns:
+              - column:
+                  name: recipient_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_shared_task_user
+                    references: users(id)
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_shared_task_task
+                    references: tasks(id)
+
+
